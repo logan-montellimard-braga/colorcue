@@ -33,7 +33,7 @@ export const subcommands = [
 ];
 
 program
-  .version('0.0.1')
+  .version('0.2.0')
   .option('-q, --quiet', 'show only error messages and return values')
   .option('-c, --no-colors', "don't print with colors")
   .option('--polyfill', "load es6 polyfill (slower)");
