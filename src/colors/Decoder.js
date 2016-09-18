@@ -8,6 +8,14 @@ import Color                  from "+/colors/Color";
 import tupleToInt             from "+/colors/utils/tupleToInt";
 
 /**
+ * Cache for already decoded colors.
+ *
+ * @private
+ * @type {Object}
+ */
+let _cachedColors = {};
+
+/**
  * Class to decode a previously-encoded two-word tuple back into its 
  * corresponding color.
  *
@@ -69,6 +77,10 @@ class Decoder {
       return Promise.reject('Input is not a two-word tuple');
     }
 
+    if (_cachedColors[this.words.join(' ')]) {
+      return Promise.resolve(_cachedColors[this.words.join(' ')]);
+    }
+
     return new Promise((resolve, reject) => {
       this.structure = this._determineStructure();
       if (!this.structure[0]) {
@@ -80,13 +92,18 @@ class Decoder {
       const hue = this._getDescriptorValue();
       if (hue < 0) { return reject('Input is invalid.'); }
       const descriptorKind = this._determineDescriptorKind();
+      let retCol = null;
       switch (descriptorKind) {
         case 'color':
           let [saturation, luminosity] = this._getWordValues();
-          return resolve(new Color([hue, saturation, luminosity], 'hsl'));
+          retCol = new Color([hue, saturation, luminosity], 'hsl');
+          _cachedColors[this.words.join(' ')] = retCol;
+          return resolve(retCol);
         case 'gray':
           luminosity = this.wordCalculator.calculate(this.word);
-          return resolve(new Color([0, 0, luminosity], 'hsl'));
+          retCol = new Color([0, 0, luminosity], 'hsl');
+          _cachedColors[this.words.join(' ')] = retCol;
+          return resolve(retCol);
       }
     });
   }
