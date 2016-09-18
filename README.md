@@ -4,7 +4,7 @@
 
 # colorcue
 
-Encode colors into easy-to-remember two-words tuples.
+Encode colors into easy-to-remember two-word tuples.
 
 ### Contents
 
@@ -22,12 +22,13 @@ Colorcue is a command-line utility that can encode colors in multiple formats
 into an easy-to-remember tuple of two words.
 The resulting tuple is composed of a "normal" word drawn from a given words
 database, and a descriptor word that is selected from a handmade list. The
-descriptor word is selected from the general hue of the color and thus reminds
-of it or of everyday things that share the same color.
+descriptor word is selected from the general hue of the color and is thus
+reminiscent of it.
 
 The encoding algorithm uses a separate words database, but the decoding is done
 independently of the list used during encoding and can be done by hand in a
-low-tech environment.
+low-tech environment, with only a calculator (encoding is a bit trickier by
+hand, though).
 
 Example: **#C6242C**, a red/rose color, can be encoded into the tuple
 **rosewood bundles**.
@@ -68,8 +69,8 @@ Unzip the archive, which contains the wordlist in text format and the SCOWL
 copyright notice.
 
 If you choose to use your own wordlist, it should have one word per line,
-without spaces. You will need a fairly big list if you want to encode any color 
-or to be offered alternative choices if the initial encoding does not suit you. 
+without spaces. You will need a fairly big list if you want to encode any color
+or to be offered alternative choices if the initial encoding does not suit you.
 For instance, the aforementioned wordlist contains around 40,000 words.
 
 If you want to check the capability of your wordlist, see documentation for the
@@ -79,29 +80,29 @@ If you want to check the capability of your wordlist, see documentation for the
 
 See `colorcue --help` and `colorcue <command> --help` for detailed help.
 
-If your version of NodeJS is too old, colorcue may not work properly. You can 
-force the use of a compatibility mode, which comes at the cost of a slower 
+If your version of NodeJS is too old, colorcue may not work properly. You can
+force the use of a compatibility mode, which comes at the cost of a slower
 startup time, with the `--polyfill` option.
 
-If your terminal does not correctly display ANSI color code escape sequences, 
+If your terminal does not correctly display ANSI color code escape sequences,
 you can disable them with the `-c` or `--no-colors` option.
 
-If you would like to pipe colorcue output into another program or service, you 
-can disable unecessary noise with the `-q` or `--quiet` option.
+If you would like to pipe colorcue output into another program or service, you
+can disable unnecessary noise with the `-q` or `--quiet` option.
 
 ##### Initialization
 
 Before encoding anything, you must generate the database once. This can be done
 with `colorcue gendb <path_to_word_list>.`. This generates the database in
-`<data folder>/colorcue/db.data`. If you want to generate the database 
+`<data folder>/colorcue/db.data`. If you want to generate the database
 elsewhere, specify the `-o` or `--output` option.
 
-Data is cleaned before insertion in the database. You can disable rejection 
-rules with the `-d` or `--disable-rules` option, separated by commas. The 
+Data is cleaned before insertion in the database. You can disable rejection
+rules with the `-d` or `--disable-rules` option, separated by commas. The
 cleaning rules are:
 
 + empty: remove empty and blank lines **(cannot be disabled)**.
-+ reserved: remove words that are already used as special descriptor words 
++ reserved: remove words that are already used as special descriptor words
 **(cannot be disabled)**.
 + tooShort: remove words smaller than 2 characters.
 + abbreviation: remove words that are all-uppercase.
@@ -129,8 +130,8 @@ colorcue encode '#c6242c' -a
 => ...
 ```
 
-The color to encode can be supplied in various formats. Most of the time, 
-*colorcue* can guess the format in use, but you can also specify it with the 
+The color to encode can be supplied in various formats. Most of the time,
+*colorcue* can guess the format in use, but you can also specify it with the
 `--format` option:
 
 ```
@@ -143,7 +144,7 @@ colorcue encode 12,88,145 --format rgb
 ##### Decoding
 
 Decoding is done with the `decode` command applied on a words tuple.
-Note that the case of the words does not matter, but the order of the words is 
+Note that the case of the words does not matter, but the order of the words is
 signficant (except for shades of gray colors).
 
 ```
@@ -183,26 +184,25 @@ the mnemonics without the hassle of decoding every single color you need to use.
 
 ### How it works
 
-Colorcue algorithm is partly based on a decoding table and a standalone 
-algorithm.
+Colorcue is partly based on a decoding table and a standalone algorithm.
 
 For encoding:
 
-+ The color is converted to HSL representation, rounding channels to nearest 
++ The color is converted to HSL representation, rounding channels to nearest
 integer.
-+ The hue channel (0-360) is used to select the _descriptor word_ from the predefined 
++ The hue channel (0-360) is used to select the _descriptor word_ from the predefined
 table (see `data/colors.data`).
-+ The saturation and luminosity channels (0-100) are merged into a single 
++ The saturation and luminosity channels (0-100) are merged into a single
 integer with the following formula:
 ```
 score = (101 * saturation + luminosity) % 5100
 ```
-+ The words database is searched to find words whose score equals the 
-previously calculated score. Word scores are obtained by summing the alphabet 
-position of each letter (starting at 0) multiplied by the indice of the letter 
++ The words database is searched to find words whose score equals the
+previously calculated score. Word scores are obtained by summing the alphabet
+position of each letter (starting at 0) multiplied by the indice of the letter
 in the word (starting at 97).
 + The descriptor word and the normal word are joined. If the previous score was > 5101
-before the modulo operator, the result is [descriptor, word], otherwise it is 
+before the modulo operator, the result is [descriptor, word], otherwise it is
 [word, descriptor].
 
 
@@ -210,16 +210,16 @@ For decoding:
 
 + Structure is determined by looking at the descriptor words table, to find if 
 the tuple is in the form [descriptor, word] or [word, descriptor].
-+ The hue channel of the color is determined by retrieving the value of the 
++ The hue channel of the color is determined by retrieving the value of the
 descriptor word from the descriptor words table (see `data/colors.data`).
 + The score of the normal word is calculated. If the structure was [descriptor, word],
 add 5100 to the score.
-+ The previous score is scinded into two integers with the formula:
++ The previous score is split into two integers with the formula:
 ```
 a = floor(score / 101)
 b = floor(score - 101 * a)
 ```
-+ The first integer is used as the saturation channel, the second as the 
++ The first integer is used as the saturation channel, the second as the
 luminosity channel.
 + Color in HSL format is converted back to the requested format.
 
