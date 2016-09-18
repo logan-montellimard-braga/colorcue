@@ -1,6 +1,6 @@
 {
   "name": "colorcue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Encode and decode colors as easy-to-remember words tuples",
   "main": "lib/index.js",
   "directories": {
