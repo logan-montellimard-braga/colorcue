@@ -229,6 +229,11 @@ luminosity channel.
 You can generate the developer documentation with `npm run doc`, and run tests
 with `npm test`.
 
+##### TODO
+
++ Improve algorithm regarding shades of gray so that colors with very low
+saturation that are not pure grays are still encoded with gray descriptor words.
+
 ### License
 
 MIT. See file `LICENSE` for full license.
