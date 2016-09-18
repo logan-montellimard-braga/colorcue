@@ -10,6 +10,7 @@ import gendb    from "+/commands/gendb";
 import check    from "+/commands/check";
 import encode   from "+/commands/encode";
 import decode   from "+/commands/decode";
+import replace  from "+/commands/replace";
 import Color    from "+/colors/Color";
 
 import print, * as p from "+/commands/utils/printing";
@@ -27,7 +28,8 @@ export const subcommands = [
   'gendb',
   'encode',
   'decode',
-  'check'
+  'check',
+  'replace'
 ];
 
 program
@@ -122,6 +124,38 @@ program
 
   See command \`${p.em('encode')}\` to encode a color into a words tuple you
   can decode with this command.
+    `);
+  });
+
+program
+  .command('replace <file>')
+  .description('Replace colorcue references in given file.')
+  .option('-o, --output <file>', 'file ouput (default: STDOUT)')
+  .option('--format <format>', 'replace the colors in the given format (default: hex)')
+  .option('-i, --ignore-invalid', 'ignore invalid references')
+  .action((file, opts) => { replace(file, opts); })
+  .on('--help', () => {
+    print(
+`  Color formats:
+    ${Color.modes.join(', ')}.
+
+  -----------------------------------------------------------------------------
+
+  This command is used to replace all colorcue references in the given file with
+  the decoded color in the supplied format.
+  Colorcue references are in the form \`cc:word<separator>word\`, where
+  <separator> is any of \`.\`, \`,\` or \`_\`.
+  For example, the following strings are all valid colorcue references:
+    - cc:rosewood.bundles
+    - cc:MySpace,employee
+    - cc:awful_polka-dot
+
+  If the --ignore-invalid flag is given, any invalid colorcue reference will be
+  left unchanged in the output and decoding will continue for the rest of the
+  file. Otherwise, the first invalid reference encountered shuts down processing
+  and no output is generated.
+
+  This command is mostly useful for replacing your color mnemonics in CSS files.
     `);
   });
 

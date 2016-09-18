@@ -161,6 +161,26 @@ colorcue decode rosewood bundles --format hsl
 ```
 
 
+##### Replacing
+
+You can replace all colorcue references in a given file with the `replace`
+command:
+
+```
+colorcue replace style.cc.css --output style.css
+```
+
+Colorcue references are in the form `cc:word.word`, for example
+`cc:rosewood.bundles`.
+
+You can specify the color output format with the `--format` option, and ignore
+invalid references with the `-i` or `--ignore-invalid` flag.
+
+This command is mostly useful to replace your color mnemonics in your CSS files
+during your assets compilation pipeline, for example, allowing you to work with
+the mnemonics without the hassle of decoding every single color you need to use.
+
+
 ### How it works
 
 Colorcue algorithm is partly based on a decoding table and a standalone 
