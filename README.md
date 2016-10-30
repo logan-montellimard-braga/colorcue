@@ -145,7 +145,7 @@ colorcue encode 12,88,145 --format rgb
 
 Decoding is done with the `decode` command applied on a words tuple.
 Note that the case of the words does not matter, but the order of the words is
-signficant (except for shades of gray colors).
+significant (except for shades of gray colors).
 
 ```
 colorcue decode MySpace employee
